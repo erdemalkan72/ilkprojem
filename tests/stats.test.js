@@ -1,0 +1,12 @@
+const assert = require('assert');
+const S = require('../stats.js');
+assert.strictEqual(S.mean([1, 2, 3]), 2);
+assert.strictEqual(S.median([3, 1, 2, 4]), 2.5);
+assert.ok(Math.abs(S.stdev([2, 4, 4, 4, 5, 5, 7, 9]) - 2.138) < 1e-3);
+const r = S.linearRegression([{ x: 1, y: 3 }, { x: 2, y: 5 }, { x: 3, y: 7 }]);
+assert.ok(Math.abs(r.slope - 2) < 1e-9 && Math.abs(r.intercept - 1) < 1e-9 && Math.abs(r.r2 - 1) < 1e-9);
+assert.strictEqual(S.linearRegression([{ x: 1, y: 1 }, { x: 1, y: 2 }]), null);
+const p = S.parseCSV('x,y\n1,2\n3;4\n5\t6\nbozuk\n');
+assert.deepStrictEqual(p.points, [{ x: 1, y: 2 }, { x: 3, y: 4 }, { x: 5, y: 6 }]);
+assert.strictEqual(p.skipped, 2);
+console.log('Tüm testler geçti ✔');

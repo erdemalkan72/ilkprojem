@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Veri Laboratuvarı</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="top">
+    <div>
+      <h1>Veri Laboratuvarı</h1>
+      <p class="sub">Veri ekledikçe istatistikler, eğilim çizgisi ve tahminler anında güncellenir.</p>
+    </div>
+    <button id="themeBtn" class="ghost" type="button" aria-label="Tema değiştir">Tema</button>
+  </header>
+
+  <main class="layout">
+    <!-- SOL: Veri girişi -->
+    <section class="card" aria-labelledby="inputTitle">
+      <h2 id="inputTitle">1. Veriyi besle</h2>
+
+      <form id="addForm" class="row-form">
+        <label>X <input id="xIn" type="number" step="any" required placeholder="ör. 5"></label>
+        <label>Y <input id="yIn" type="number" step="any" required placeholder="ör. 12"></label>
+        <button type="submit">Ekle</button>
+      </form>
+
+      <details>
+        <summary>Toplu yapıştır / dosya yükle (CSV)</summary>
+        <textarea id="bulkIn" rows="5" placeholder="Her satıra bir nokta: x,y&#10;1,2.1&#10;2,3.9&#10;3,6.2"></textarea>
+        <div class="btns">
+          <button id="bulkBtn" type="button">Yapıştırılanı ekle</button>
+          <label class="file">CSV dosyası seç<input id="fileIn" type="file" accept=".csv,.txt"></label>
+        </div>
+      </details>
+
+      <div class="btns">
+        <label class="inline">Örnek veri:
+          <select id="sampleSel">
+            <option value="">Seç…</option>
+            <option value="study">Çalışma saati → Sınav notu</option>
+            <option value="temp">Sıcaklık → Dondurma satışı</option>
+            <option value="ads">Reklam bütçesi → Ziyaretçi</option>
+          </select>
+        </label>
+        <button id="clearBtn" type="button" class="danger">Tümünü sil</button>
+      </div>
+
+      <div class="axis-names">
+        <label>X adı <input id="xName" type="text" value="X"></label>
+        <label>Y adı <input id="yName" type="text" value="Y"></label>
+      </div>
+
+      <div class="table-wrap">
+        <table id="dataTable">
+          <thead><tr><th>#</th><th id="thX">X</th><th id="thY">Y</th><th><span class="sr">Sil</span></th></tr></thead>
+          <tbody></tbody>
+        </table>
+        <p id="emptyMsg" class="muted">Henüz veri yok. Bir nokta ekle ya da örnek veri seç.</p>
+      </div>
+    </section>
+
+    <!-- SAĞ: Sonuçlar -->
+    <section class="results" aria-labelledby="resTitle">
+      <h2 id="resTitle" class="sr">Sonuçlar</h2>
+
+      <div class="card">
+        <h2>2. Sonuçlar</h2>
+        <div id="tiles" class="tiles"></div>
+        <p id="insight" class="insight"></p>
+      </div>
+
+      <div class="card">
+        <div class="chart-head">
+          <h2 id="chartTitle">Dağılım ve eğilim çizgisi</h2>
+          <ul class="legend" aria-label="Lejant">
+            <li><span class="key dot"></span>Veri noktası</li>
+            <li><span class="key line"></span>Eğilim çizgisi</li>
+          </ul>
+        </div>
+        <div id="chart" class="chart" role="img" aria-labelledby="chartTitle"></div>
+        <div id="tooltip" class="tooltip" hidden></div>
+      </div>
+
+      <div class="card">
+        <h2>3. Tahmin et</h2>
+        <form id="predForm" class="row-form">
+          <label><span><span id="predLabel">X</span> değeri</span> <input id="predIn" type="number" step="any" required placeholder="ör. 10"></label>
+          <button type="submit">Tahmin et</button>
+        </form>
+        <p id="predOut" class="pred-out" aria-live="polite"></p>
+      </div>
+    </section>
+  </main>
+
+  <script src="stats.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
