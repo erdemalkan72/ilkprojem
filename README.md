@@ -13,7 +13,8 @@ Veri ekledikçe sonuç üreten etkileşimli bir tarayıcı uygulaması.
 
 ## Çalıştırma
 
-Kurulum gerekmez. `index.html` dosyasını tarayıcıda açman yeterli.
+- **Çevrimiçi:** https://erdemalkan72.github.io/ilkprojem/ (GitHub Pages açıldıktan sonra)
+- **Yerelde:** Kurulum gerekmez, `index.html` dosyasını tarayıcıda açman yeterli.
 
 ## Test
 
