@@ -18,8 +18,9 @@ function save() { try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); 
 function load() {
   try {
     const s = JSON.parse(localStorage.getItem(STORE_KEY));
-    if (s && Array.isArray(s.points)) state = { ...state, ...s, lastPred: null };
+    if (s && Array.isArray(s.points)) { state = { ...state, ...s, lastPred: null }; return true; }
   } catch {}
+  return false;
 }
 
 // ---- Biçimlendirme ----
@@ -194,7 +195,7 @@ $('#bulkBtn').addEventListener('click', () => {
   const { points, skipped } = Stats.parseCSV($('#bulkIn').value);
   if (points.length) addPoints(points);
   $('#bulkIn').value = '';
-  if (skipped) alert(`${points.length} nokta eklendi, ${skipped} satır okunamadı ve atlandı.`);
+  notify(`${points.length} nokta eklendi` + (skipped ? `, ${skipped} satır okunamadı ve atlandı.` : '.'));
 });
 
 $('#fileIn').addEventListener('change', async (e) => {
@@ -202,7 +203,7 @@ $('#fileIn').addEventListener('change', async (e) => {
   if (!f) return;
   const { points, skipped } = Stats.parseCSV(await f.text());
   if (points.length) addPoints(points);
-  alert(`${points.length} nokta eklendi` + (skipped ? `, ${skipped} satır atlandı.` : '.'));
+  notify(`${points.length} nokta eklendi` + (skipped ? `, ${skipped} satır okunamadı ve atlandı.` : '.'));
   e.target.value = '';
 });
 
@@ -214,10 +215,27 @@ $('#sampleSel').addEventListener('change', (e) => {
   e.target.value = '';
 });
 
-$('#clearBtn').addEventListener('click', () => {
-  if (state.points.length && !confirm('Tüm veriler silinsin mi?')) return;
+// İki adımlı silme: ilk tıklama onay ister, 3 sn içinde ikinci tıklama siler.
+let clearArmed = null;
+$('#clearBtn').addEventListener('click', (e) => {
+  const btn = e.currentTarget;
+  if (!state.points.length) return;
+  if (!clearArmed) {
+    btn.textContent = 'Emin misin? Tekrar tıkla';
+    clearArmed = setTimeout(() => { btn.textContent = 'Tümünü sil'; clearArmed = null; }, 3000);
+    return;
+  }
+  clearTimeout(clearArmed); clearArmed = null; btn.textContent = 'Tümünü sil';
   state.points = []; state.lastPred = null; save(); render();
+  notify('Tüm veriler silindi.');
 });
+
+let notifyT;
+function notify(msg) {
+  const el = $('#notice');
+  el.textContent = msg; el.hidden = false;
+  clearTimeout(notifyT); notifyT = setTimeout(() => { el.hidden = true; }, 4000);
+}
 
 $('#dataTable').addEventListener('click', (e) => {
   const b = e.target.closest('[data-del]');
@@ -253,5 +271,10 @@ try { const t = localStorage.getItem(STORE_KEY + '-theme'); if (t) document.docu
 let rt;
 addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(renderChart, 100); });
 
-load();
+// İlk açılışta boş ekran yerine örnek veriyle başla
+if (!load()) {
+  const smp = SAMPLES.study;
+  state.xName = smp.xName; state.yName = smp.yName;
+  state.points = smp.pts.map(([x, y]) => ({ x, y }));
+}
 render();

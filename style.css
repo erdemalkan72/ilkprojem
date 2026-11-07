@@ -144,3 +144,6 @@ tr.flash td { animation: flash 1s ease-out; }
 }
 .pred-out { margin: .75rem 0 0; font-size: 1.05rem; }
 .pred-out .big { font-size: 1.5rem; font-weight: 700; }
+
+.notice { margin: 0 0 .5rem; padding: 6px 10px; border-radius: 8px; border: 1px solid var(--border); color: var(--text-secondary); font-size: .85rem; }
+[hidden] { display: none !important; }
